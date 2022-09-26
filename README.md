@@ -4,7 +4,6 @@
 
 <br />
 <div align="center">
-    <img src="https://media.istockphoto.com/vectors/hand-holding-retro-mic-microphone-in-front-of-huge-crowd-vector-id546015598?k=20&m=546015598&s=612x612&w=0&h=xeLDvKBJuqk8OdaOzvma_EeIJcQPiSIKft0BTtIQ4F4=" alt="Logo" width="220">
 
 <h3 align="center">'Sing me a song' Tests</h3>
   <p align="center">
