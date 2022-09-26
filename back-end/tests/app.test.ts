@@ -41,3 +41,24 @@ describe("POST /recommendations", () => {
         expect(create.status).toBe(422);
     });
 });
+
+describe("GET /recommendations", () => {
+    it("200 ~ Get all recommendations", async () => {
+      const firstRecommedation = recommendationFactory();
+      const secondRecomendation = recommendationFactory();
+      
+      await agent.post("/recommendations").send(firstRecommedation);
+      await agent.post("/recommendations").send(secondRecomendation);
+  
+      const response = await agent.get("/recommendations");
+      expect(response.status).toBe(200);
+      expect(response.body).toHaveLength(2);
+  
+      expect(response.body[0].name).toBe(secondRecomendation.name);
+      expect(response.body[0].youtubeLink).toBe(secondRecomendation.youtubeLink);
+  
+      expect(response.body[1].name).toBe(firstRecommedation.name);
+      expect(response.body[1].youtubeLink).toBe(firstRecommedation.youtubeLink);
+    });
+
+});
