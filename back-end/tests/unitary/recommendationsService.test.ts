@@ -134,7 +134,7 @@ describe("recommendationService test suite", () => {
   });
 
   describe("Random recommendations test suit", () => {
-    it("success in get random gt", async () => {
+    it("success in try get random gt", async () => {
       jest.spyOn(Math, "random").mockReturnValueOnce(0.5);
 
       jest
@@ -147,6 +147,21 @@ describe("recommendationService test suite", () => {
         score: 10,
         scoreFilter: "gt",
       });
-    });  
+    });
+    
+    it("success in try get random lte", async () => {
+      jest.spyOn(Math, "random").mockReturnValueOnce(0.8);
+
+      jest
+        .spyOn(recommendationRepository, "findAll")
+        .mockResolvedValueOnce([recommendationFactory]);
+
+      await recommendationService.getRandom();
+      
+      expect(recommendationRepository.findAll).toHaveBeenLastCalledWith({
+        score: 10,
+        scoreFilter: "lte",
+      });
+    });
   });
 });
