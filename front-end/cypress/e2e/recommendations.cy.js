@@ -26,6 +26,31 @@ describe("Recommendations test suite", () => {
                 expect(res.response.statusCode).to.equals(201);
             });
         });
+
+        it("shouldn't create a duplicated song recommendation", () => {
+            const song = {
+                name: "Diego Pinho - Caractere mais frequente",
+                youtubeLink: "https://youtu.be/q08oqgoSTSo",
+            };
+      
+            cy.addSong(song);
+      
+            cy.visit("http://localhost:3000");
+      
+            cy.get("input[placeholder='Name']").type(song.name);
+            cy.get("input[placeholder='https://youtu.be/...']").type(
+                song.youtubeLink
+            );
+      
+            cy.intercept("POST", "http://localhost:5000/recommendations").as(
+                "createRecommendation"
+            );
+            cy.get("button").click();
+      
+            cy.wait("@createRecommendation").then((res) => {
+                expect(res.response.statusCode).to.equals(409);
+            });
+        });
     });
 });
 
