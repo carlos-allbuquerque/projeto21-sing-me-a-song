@@ -1,7 +1,6 @@
+import { recommendationRepository } from './../../src/repositories/recommendationRepository';
+import { recommendationService } from './../../src/services/recommendationsService';
 import { jest } from "@jest/globals";
-
-import { recommendationService } from "../../src/services/recommendationsService.js";
-import { recommendationRepository } from "../../src/repositories/recommendationRepository.js";
 
 describe("recommendationService test suite", () => {
   const recommendationNameAndLink = {
@@ -42,6 +41,22 @@ describe("recommendationService test suite", () => {
         message: "Recommendations names must be unique",
         type: "conflict",
       });
+    });
+  });
+
+  describe("downvotes tests suites", () => {
+    it("Sucess in trying to downvote", async () => {
+      jest
+        .spyOn(recommendationRepository, "find")
+        .mockResolvedValueOnce(recommendationFactory);
+
+      jest
+        .spyOn(recommendationRepository, "updateScore")
+        .mockResolvedValueOnce(recommendationFactory);
+
+      await recommendationService.downvote(1);
+      expect(recommendationRepository.find).toHaveBeenCalledWith(1);
+      expect(recommendationRepository.updateScore).toHaveBeenLastCalledWith(1, "decrement");
     });
   });
 });
