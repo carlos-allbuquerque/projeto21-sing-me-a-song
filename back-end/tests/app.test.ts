@@ -11,19 +11,28 @@ beforeEach(async () => {
 
 const agent = supertest.agent(app);
 
-describe("🌱 ~ POST /recommendations", () => {
-    it("✨ 201 ~ Create a new recommendation", async () => {
-      const body = recommendationFactory();
-  
-      const response = await agent.post("/recommendations").send(body);
-      expect(response.status).toBe(201);
-  
-      const { name, youtubeLink } = body;
-      const checkUser = await prisma.recommendation.findFirst({
-        where: { name, youtubeLink },
-      });
-  
-      expect(checkUser).not.toBeNull();
+describe("POST /recommendations", () => {
+    it("201 ~ Create a new recommendation", async () => {
+        const body = recommendationFactory();
+
+        const response = await agent.post("/recommendations").send(body);
+        expect(response.status).toBe(201);
+
+        const { name, youtubeLink } = body;
+        const checkUser = await prisma.recommendation.findFirst({
+            where: { name, youtubeLink },
+        });
+
+        expect(checkUser).not.toBeNull();
     });
 
+    it("422 ~ Conflict when creating a new recommmendation", async () => {
+        const body = recommendationFactory();
+
+        const create = await agent.post("/recommendations").send(body);
+        expect(create.status).toBe(201);
+
+        const createAgain = await agent.post("/recommendations").send(body);
+        expect(createAgain.status).toBe(409);
+    });
 });
