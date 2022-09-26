@@ -118,3 +118,23 @@ describe("GET /recommendations", () => {
         expect(response.body[1].youtubeLink).toBe(secondRecomendation.youtubeLink);      
     });
 });
+
+describe("POST upvote and downvote", () => {
+    it("200 ~ Upvote a recommendation", async () => {
+        const body = recommendationFactory();
+
+        await agent.post("/recommendations").send(body);
+
+        const recommendation = await prisma.recommendation.findFirst({
+            where: {
+                name: body.name,
+                youtubeLink: body.youtubeLink
+            },
+        });
+        await agent.post(`/recommendations/${recommendation.id}/upvote`);
+        const response = await agent.get(`/recommendations/${recommendation.id}`);
+
+        expect(response.status).toBe(200);
+        expect(response.body.score).toBe(1);
+    });
+});
