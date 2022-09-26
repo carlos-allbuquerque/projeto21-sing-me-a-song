@@ -109,5 +109,16 @@ describe("recommendationService test suite", () => {
         type: "not_found",
       });
     });
+
+    it("Success in get", async () => {
+      jest
+        .spyOn(recommendationRepository, "findAll")
+        .mockResolvedValueOnce([recommendationFactory]);
+
+      const searched = await recommendationService.get();
+    
+      expect(recommendationRepository.findAll).toHaveBeenCalledTimes(1);
+      expect(searched).toEqual([recommendationFactory]);
+    });
   });
 });
