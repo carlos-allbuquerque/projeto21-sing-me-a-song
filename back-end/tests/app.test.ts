@@ -137,4 +137,9 @@ describe("POST upvote and downvote", () => {
         expect(response.status).toBe(200);
         expect(response.body.score).toBe(1);
     });
+
+    it("404 ~ Upvote a recommendation that doesn't exist", async () => {
+        const response = await agent.post("/recommendations/1/upvote");
+        expect(response.status).toBe(404);
+      });
 });
