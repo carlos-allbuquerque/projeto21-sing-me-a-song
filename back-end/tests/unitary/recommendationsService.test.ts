@@ -157,11 +157,22 @@ describe("recommendationService test suite", () => {
         .mockResolvedValueOnce([recommendationFactory]);
 
       await recommendationService.getRandom();
-      
+
       expect(recommendationRepository.findAll).toHaveBeenLastCalledWith({
         score: 10,
         scoreFilter: "lte",
       });
+    });
+
+    it("error notfound in try get random recommendation", async () => {
+      jest
+        .spyOn(recommendationRepository, "findAll")
+        .mockResolvedValue([] as any);
+
+      const result = recommendationService.getRandom();
+
+      expect(result).rejects.toHaveProperty("type", "not_found");
+      expect(recommendationRepository.findAll).toBeCalled();
     });
   });
 });
