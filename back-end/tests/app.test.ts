@@ -65,5 +65,33 @@ describe("GET /recommendations", () => {
         const response = await agent.get("/recommendations");
         expect(response.status).toBe(200);
         expect(response.body).toHaveLength(0);
-    })
+    });
+
+    it("200 ~ Get random recommendation", async () => {
+        const firstRecommendation = recommendationFactory();
+        const secondRecommendation = recommendationFactory();
+
+        await agent.post("/recommendations").send(firstRecommendation);
+        await agent.post("/recommendations").send(secondRecommendation);
+
+        const response = await agent.get("/recommendations/random");
+        expect(response.status).toBe(200);
+        expect(response.body).toHaveProperty("name");
+        expect(`${firstRecommendation.name} ${secondRecommendation.name}`).toContain(response.body.name);
+    });
+
+    it("200 ~ Get recommendation by id", async () => {
+        const body = recommendationFactory();
+    
+        await agent.post("/recommendations").send(body);
+        
+        const recommendation = await prisma.recommendation.findFirst({
+          where: { name: body.name, youtubeLink: body.youtubeLink },
+        });
+        const response = await agent.get(`/recommendations/${recommendation.id}`);
+    
+        expect(response.status).toBe(200);
+        expect(response.body.name).toBe(recommendation.name);
+        expect(response.body.youtubeLink).toBe(recommendation.youtubeLink);
+      });
 });
