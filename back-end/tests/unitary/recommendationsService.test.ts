@@ -45,7 +45,7 @@ describe("recommendationService test suite", () => {
   });
 
   describe("downvotes tests suites", () => {
-    it("Sucess in trying to downvote", async () => {
+    it("Success in trying to downvote", async () => {
       jest
         .spyOn(recommendationRepository, "find")
         .mockResolvedValueOnce(recommendationFactory);
@@ -57,6 +57,26 @@ describe("recommendationService test suite", () => {
       await recommendationService.downvote(1);
       expect(recommendationRepository.find).toHaveBeenCalledWith(1);
       expect(recommendationRepository.updateScore).toHaveBeenLastCalledWith(1, "decrement");
+    });
+
+    it("Downvote with delete recommendation", async () => {
+      jest
+        .spyOn(recommendationRepository, "find")
+        .mockResolvedValueOnce(recommendationFactory);
+
+      jest
+        .spyOn(recommendationRepository, "updateScore")
+        .mockResolvedValueOnce({ ...recommendationFactory, score: -6 });
+
+      jest
+        .spyOn(recommendationRepository, "remove")
+        .mockResolvedValueOnce(null);
+
+      await recommendationService.downvote(1);
+
+      expect(recommendationRepository.find).toHaveBeenCalledWith(1);
+      expect(recommendationRepository.updateScore).toHaveBeenLastCalledWith(1, "decrement");
+      expect(recommendationRepository.remove).toHaveBeenCalledTimes(1);
     });
   });
 });
