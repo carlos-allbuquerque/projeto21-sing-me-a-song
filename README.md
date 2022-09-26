@@ -27,17 +27,3 @@
 Nesse projeto desenvolvemos os testes para o Sing me a song - um projeto fullstack de recomendações de músicas entre usuários.
 Foram realizados testes de integração e unitários através do Jest e testes Ponta a Ponta (E2E) com o cypress.
 
-
-<!-- CONTACT -->
-
-### Contact
-
-<a>[![LinkedIn][linkedin-shield]][linkedin-url]</a>
-<a>[![Email][slack-shield]][slack-url]</a>
-
-<!-- MARKDOWN LINKS & IMAGES -->
-
-[linkedin-shield]: https://img.shields.io/badge/-LinkedIn-black.svg?style=for-the-badge&logo=linkedin&colorB=blue
-[linkedin-url]: [https://www.linkedin.com/in/victorlimah/](https://www.linkedin.com/in/victorlimah/)
-[slack-shield]: https://img.shields.io/badge/Email-DB4A39?style=for-the-badge&logo=gmail&logoColor=white
-[slack-url]: mailto:victor.lima@dcx.ufpb.br
