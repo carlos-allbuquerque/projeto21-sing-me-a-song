@@ -145,5 +145,22 @@ describe("Recommendations test suite", () => {
             });
         });
     });
+
+    describe("Random screen test suit", () => {
+        it("should load ten tests", () => {
+            const amount = 50;
+            const highScorePercentage = 70;
+            cy.seedDatabase(amount, highScorePercentage);
+    
+            cy.intercept("GET", "/recommendations/random").as("getRandomRecommendation");
+            cy.visit("http://localhost:3000/random");
+            cy.wait("@getRandomRecommendation").then(({ response }) => {
+                cy.log(response);
+                expect(response.body).to.haveOwnProperty("name");
+                expect(response.body).to.haveOwnProperty("youtubeLink");
+                expect(response.body).to.haveOwnProperty("score");
+            });
+        });
+    });
 });
 
