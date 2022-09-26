@@ -26,7 +26,7 @@ describe("POST /recommendations", () => {
         expect(checkUser).not.toBeNull();
     });
 
-    it("422 ~ Conflict when creating a new recommmendation", async () => {
+    it("409 ~ Conflict when creating a new recommmendation", async () => {
         const body = recommendationFactory();
 
         const create = await agent.post("/recommendations").send(body);
@@ -34,5 +34,10 @@ describe("POST /recommendations", () => {
 
         const createAgain = await agent.post("/recommendations").send(body);
         expect(createAgain.status).toBe(409);
+    });
+
+    it("422 ~ Create a new recommendation with invalid data", async () => {
+        const create = await agent.post("/recommendations").send({});
+        expect(create.status).toBe(422);
     });
 });
