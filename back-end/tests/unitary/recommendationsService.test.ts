@@ -78,5 +78,26 @@ describe("recommendationService test suite", () => {
       expect(recommendationRepository.updateScore).toHaveBeenLastCalledWith(1, "decrement");
       expect(recommendationRepository.remove).toHaveBeenCalledTimes(1);
     });
+
+    it("Fail in downvote", async () => {
+      jest.spyOn(recommendationRepository, "find").mockResolvedValueOnce(null);
+
+      expect(recommendationService.downvote(1)).rejects.toEqual({
+        message: "",
+        type: "not_found",
+      });
+    });
+  });
+
+  describe("Get tests suites", () => {
+    it("Sucess in getByIdOrFail", async () => {
+      jest
+        .spyOn(recommendationRepository, "find")
+        .mockResolvedValueOnce(recommendationFactory);
+
+      const searched = await recommendationService.getById(1);
+      expect(recommendationRepository.find).toHaveBeenCalledWith(1);
+      expect(searched).toEqual(recommendationFactory);
+    });
   });
 });
