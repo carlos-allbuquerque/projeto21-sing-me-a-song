@@ -130,7 +130,7 @@ describe("POST upvote and downvote", () => {
                 name: body.name,
                 youtubeLink: body.youtubeLink
             },
-        });
+        })
         await agent.post(`/recommendations/${recommendation.id}/upvote`);
         const response = await agent.get(`/recommendations/${recommendation.id}`);
 
@@ -142,4 +142,29 @@ describe("POST upvote and downvote", () => {
         const response = await agent.post("/recommendations/1/upvote");
         expect(response.status).toBe(404);
       });
-});
+
+    it("200 ~ Downvote a recommendation", async () => {
+        const body = recommendationFactory();
+        
+        await agent.post("/recommendations").send(body);
+
+        const recommendation = await prisma.recommendation.findFirst({
+            where: {
+                name: body.name,
+                youtubeLink: body.youtubeLink
+            },
+        });
+        await agent.post(`/recommendations/${recommendation.id}/upvote`);
+        await agent.post(`/recommendations/${recommendation.id}/downvote`);
+
+        const response = await agent.get(`/recommendations/${recommendation.id}`);
+
+        expect(response.status).toBe(200);
+        expect(response.body.score).toBe(0);
+    });
+
+    it("404 ~ Downvote a recommendatino that doesn't exist", async () => {
+        const response = await agent.post("/recommendations/1/downvote");
+        expect(response.status).toBe(404);
+    });
+});     
