@@ -44,10 +44,10 @@ describe("POST /recommendations", () => {
 
 describe("GET /recommendations", () => {
     it("200 ~ Get all recommendations", async () => {
-        const firstRecommedation = recommendationFactory();
+        const firstRecommendation = recommendationFactory();
         const secondRecomendation = recommendationFactory();
         
-        await agent.post("/recommendations").send(firstRecommedation);
+        await agent.post("/recommendations").send(firstRecommendation);
         await agent.post("/recommendations").send(secondRecomendation);
 
         const response = await agent.get("/recommendations");
@@ -57,8 +57,8 @@ describe("GET /recommendations", () => {
         expect(response.body[0].name).toBe(secondRecomendation.name);
         expect(response.body[0].youtubeLink).toBe(secondRecomendation.youtubeLink);
 
-        expect(response.body[1].name).toBe(firstRecommedation.name);
-        expect(response.body[1].youtubeLink).toBe(firstRecommedation.youtubeLink);
+        expect(response.body[1].name).toBe(firstRecommendation.name);
+        expect(response.body[1].youtubeLink).toBe(firstRecommendation.youtubeLink);
     });
 
     it("200 ~ Get zero recommendations", async () => {
@@ -93,5 +93,28 @@ describe("GET /recommendations", () => {
         expect(response.status).toBe(200);
         expect(response.body.name).toBe(recommendation.name);
         expect(response.body.youtubeLink).toBe(recommendation.youtubeLink);
-      });
+    });
+      
+    it("200 ~ Get top recommendations", async () => {
+        const firstRecommendation = recommendationFactory();
+        const secondRecomendation = recommendationFactory();
+        const thirdRecommendation = recommendationFactory();
+    
+        const { body } = await agent.post("/recommendations").send(firstRecommendation);
+        await agent.post("/recommendations").send(secondRecomendation);
+        await agent.post("/recommendations").send(thirdRecommendation);
+    
+        await agent.post(`/recommendations/${body.id}/upvote`);
+    
+        const response = await agent.get("/recommendations/top/2");
+    
+        expect(response.body).toHaveLength(2);
+        expect(response.status).toBe(200);
+    
+        expect(response.body[0].name).toBe(firstRecommendation.name);
+        expect(response.body[0].youtubeLink).toBe(firstRecommendation.youtubeLink);
+    
+        expect(response.body[1].name).toBe(secondRecomendation.name);
+        expect(response.body[1].youtubeLink).toBe(secondRecomendation.youtubeLink);      
+    });
 });
