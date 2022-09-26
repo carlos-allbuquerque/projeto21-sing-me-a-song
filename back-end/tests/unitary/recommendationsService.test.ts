@@ -90,14 +90,24 @@ describe("recommendationService test suite", () => {
   });
 
   describe("Get tests suites", () => {
-    it("Sucess in getByIdOrFail", async () => {
+    it("Success in getByIdOrFail", async () => {
       jest
         .spyOn(recommendationRepository, "find")
         .mockResolvedValueOnce(recommendationFactory);
 
       const searched = await recommendationService.getById(1);
+
       expect(recommendationRepository.find).toHaveBeenCalledWith(1);
       expect(searched).toEqual(recommendationFactory);
+    });
+
+    it("Fail in trying getById", async () => {
+      jest.spyOn(recommendationRepository, "find").mockResolvedValueOnce(null);
+
+      expect(recommendationService.getById(1)).rejects.toEqual({
+        message: "",
+        type: "not_found",
+      });
     });
   });
 });
